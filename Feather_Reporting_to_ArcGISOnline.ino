@@ -1,4 +1,6 @@
-// line 29 requires your SSID info
+// based on Arduino demo script in File - Examples - ESP8266HttpClient
+// script passes GET payload to a cloud function for processing. Function sends on to AGO
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
@@ -26,7 +28,7 @@ void setup() {
   }
 
   WiFi.mode(WIFI_STA);
-  WiFiMulti.addAP("<SSID_NAme>", "<SSID_password>");
+  WiFiMulti.addAP("Dingbat", "geospatial!");
 }
 
 void loop() {
@@ -42,9 +44,8 @@ void loop() {
     HTTPClient https;
 
     Serial.print("[HTTPS] begin...\n");
-    if (https.begin(*client, "https://us-central1-esri-related.cloudfunctions.net/test1?controller=arduino_via_python_form&temperature=112.11&humidity=0&lat=0.0&long=0.0")) {
+    if (https.begin(*client, "https://us-central1-esri-related.cloudfunctions.net/test1?controller=arduino_via_python_form&temperature=115.1&humidity=12.3&lat=45.0&lon=-94.0")) {
 
-      Serial.print("[HTTPS] GET...\n");
       // start connection and send HTTP header
       int httpCode = https.GET();
 
@@ -55,15 +56,15 @@ void loop() {
 
         // file found at server
         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-          String payload = https.getString();
-          Serial.println(payload);
+          //String payload = https.getString();
+          //Serial.println(payload);
         }
       } else {
         Serial.printf("[HTTPS] GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
       }
 
       https.end();
-      delay(600000); // 60000 milliseconds=1 minute
+      delay(300000); // 60000 milliseconds=1 minute
     } else {
       Serial.printf("[HTTPS] Unable to connect\n");
     }
